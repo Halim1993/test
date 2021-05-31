@@ -21,11 +21,30 @@ namespace IONU.Controllers
 
         }
         [HttpGet]
-        [Route("getUser")]
-        public async Task<IActionResult> getUser()
+        [Route("getUser/{ID}")]
+        public async Task<ActionResult<ResoultForUser>> getUser(int ID)
         {
-            var c = await _user.GetUsers();
-            return Json(c);
+            ResoultForUser resoult = new ResoultForUser();
+
+            resoult.user = await _user.GetUser(ID);
+
+            if (resoult.user != null)
+            {
+
+                resoult.Massage = "موجود";
+                resoult.statusCode = 200;
+                return Json(resoult);
+
+
+            }
+            else {
+                resoult.Massage = "غير موجود ";
+                resoult.statusCode = 404;
+                return Json(resoult);
+            
+            }
+            
+            
         }
 
 
@@ -54,6 +73,18 @@ namespace IONU.Controllers
             }
 
             return NotFound("no user");
+        }
+        [HttpGet("")]
+        [Route("GetALL")]
+        public async Task<ActionResult<User>> GetALL()
+        {
+            var users = await _user.GetUsers();
+            if (users != null)
+            {
+                return Json(users);
+            }
+
+            return Json(users);
         }
     }
 }

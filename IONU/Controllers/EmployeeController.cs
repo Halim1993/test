@@ -38,31 +38,72 @@ namespace IONU.Controllers
         }
         [HttpPost]
         [Route("AddEmployee")]
-        public async Task AddEmployee([FromBody] Employee employee)
+        public async Task<ActionResult<Result>> AddEmployee([FromBody] Employee employee)
         {
+            Result result = new Result();
             Employee employee1 = await _employee.Cheek(employee);
-            if (employee1 == null) {
+            if (employee1 == null)
+            {
 
-              await  _employee.AddEmployee(employee);
-            
+                await _employee.AddEmployee(employee);
+                result.Massage = "تمت الاضافة بنجاح";
+                result.statusCode = 201;
+
+                return Ok(result);
+
+            }
+            else {
+                result.Massage = "هذا الموظف موجود مسبقا";
+                result.statusCode = 200;
+
+                return Ok(result);
+
             }
 
            
         }
-        [HttpPost]
-        [Route("DeleteEmployee")]
-        public void DeleteEmployee([FromBody] Employee employee)
-        {
-            _employee.DeleteEmployee(employee.Id);
+        [HttpPost("")]
+        [Route("DeleteEmployee/{ID}")]
+        public async Task<ActionResult<Result>> DeleteEmployee(int ID)
+        { Employee employee =await _employee.GetEmployee(ID);
+            Result result = new Result();
+            if (employee != null) {
+                await _employee.DeleteEmployee(ID);
+
+                result.Massage = "تمت عملية الحدف بنجاح";
+                result.statusCode = 200;
+                return Ok(result);
+            }
+            result.Massage = "الموظف غير موجود";
+            result.statusCode = 404;
+            return NotFound(result);
 
         }
         [HttpGet]
-        [Route("GetTransaction/{Id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int Id)
+        [Route("GetEmployee/{Id}")]
+        public async Task<ActionResult<ResoultForEmployee>> GetEmployee(int Id)
         {
-            Employee employee = await _employee.GetEmployee(Id);
+            string n = "موجود";
+            string u = "غير موجود ";
+            ResoultForEmployee result = new ResoultForEmployee();
 
-            return Json(employee);
+            result.employee  = await _employee.GetEmployee(Id);
+           
+
+            if (result.employee != null)
+            {
+
+                result.massege = n;
+                result.statsCode = 200;
+                return Json(result);
+
+            }
+
+            result.massege = u;
+            result.statsCode= 404;
+            return Json(result);
+          
+
         }
       
     }

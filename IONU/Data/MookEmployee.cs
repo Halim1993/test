@@ -22,7 +22,7 @@ namespace IONU.Data
                
 
            _dbcontext.Employees.Add(employee);
-                    _dbcontext.SaveChanges();
+               await     _dbcontext.SaveChangesAsync();
              
             
 
@@ -86,9 +86,14 @@ namespace IONU.Data
             {
                 Employee employee = await _dbcontext.Employees.FindAsync(id);
 
-                return employee;
+       
+                    return employee;
+               
+
+            
 
             }
+            
             catch (Exception)
             {
 

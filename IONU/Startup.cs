@@ -31,7 +31,11 @@ namespace IONU
             services.AddControllers();
             services.AddDbContext<ApplicationDbcontext>(options =>
                   options.UseSqlServer(Configuration.GetConnectionString("AppContext")));
-         
+
+            services.AddTransient<IEmployee, MookEmployee>();
+
+            services.AddTransient<IUserRepo, MooKUser>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
